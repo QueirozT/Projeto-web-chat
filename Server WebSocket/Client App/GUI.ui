@@ -39,7 +39,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pgLogin">
        <layout class="QGridLayout" name="gridLayout_3">
@@ -305,6 +305,9 @@ QPushButton:pressed {
           </property>
           <property name="cursor" stdset="0">
            <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::ClickFocus</enum>
           </property>
           <property name="autoFillBackground">
            <bool>true</bool>

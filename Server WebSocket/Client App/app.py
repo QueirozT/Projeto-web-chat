@@ -1,6 +1,6 @@
 import sys, asyncio, websockets, time
 from threading import Thread
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QListWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QListWidgetItem, QScrollBar
 from PyQt5.QtCore import Qt, QTime
 from display import *
 
@@ -11,12 +11,24 @@ class Chat(QMainWindow, Ui_MainWindow):
         super().setupUi(self)
 
         # Inicialização de Variáveis
+        self.url = "ws://localhost:55555"
+        self.nick = ""
         self.stackedWidget.setCurrentWidget(self.pgLogin)
         self.listChat.clear()
         self.listChat.setWordWrap(True)
         self.listChat.setSpacing(5)
-        self.url = "ws://localhost:55555"
-        self.nick = ""
+        scroll_bar = QScrollBar(self)
+        scroll_bar.setStyleSheet("background: lightgreen; border: none; width: 0px;")
+        self.listChat.setVerticalScrollBar(scroll_bar)
+        self.listChat.setStyleSheet("""
+            QListWidget::item {
+                border-radius: 10px;
+                padding: 5px;
+                background: lightgray;
+                width: 100%;
+            }
+        """)
+        
 
         # Inputs e Botões
         self.btnEntrar.clicked.connect(self.join_chat)
@@ -64,6 +76,7 @@ class Chat(QMainWindow, Ui_MainWindow):
         item.setBackground(Qt.green)
         item.setTextAlignment(Qt.AlignRight)
         self.listChat.addItem(item)
+        self.listChat.scrollToItem(item)
         self.inputMsg.setText('')
 
         # Enviando Mensagem para o Thread de Envio
@@ -123,6 +136,7 @@ class ReceiveThread(Thread):
                             item.setBackground(Qt.gray)
                             item.setTextAlignment(Qt.AlignLeft)
                             self.listChat.addItem(item)
+                            self.listChat.scrollToItem(item)
                     except websockets.ConnectionClosed:
                         continue
 

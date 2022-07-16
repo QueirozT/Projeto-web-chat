@@ -151,6 +151,7 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         self.listChat.setFont(font)
         self.listChat.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.listChat.setFocusPolicy(QtCore.Qt.ClickFocus)
         self.listChat.setAutoFillBackground(True)
         self.listChat.setStyleSheet("")
         self.listChat.setFrameShape(QtWidgets.QFrame.NoFrame)
@@ -202,7 +203,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
