@@ -207,8 +207,11 @@ QPushButton:pressed {
         <property name="bottomMargin">
          <number>0</number>
         </property>
-        <property name="spacing">
-         <number>0</number>
+        <property name="horizontalSpacing">
+         <number>6</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>8</number>
         </property>
         <item row="1" column="1">
          <widget class="QPushButton" name="btnEnviar">
@@ -297,6 +300,18 @@ QPushButton:pressed {
         </item>
         <item row="0" column="0" colspan="2">
          <widget class="QListWidget" name="listChat">
+          <property name="minimumSize">
+           <size>
+            <width>380</width>
+            <height>450</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>380</width>
+            <height>450</height>
+           </size>
+          </property>
           <property name="font">
            <font>
             <family>MV Boli</family>

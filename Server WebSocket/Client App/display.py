@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'GUI.ui'
+# Form implementation generated from reading ui file '.\GUI.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.7
 #
@@ -97,7 +97,8 @@ class Ui_MainWindow(object):
         self.pgChat.setObjectName("pgChat")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.pgChat)
         self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_4.setSpacing(0)
+        self.gridLayout_4.setHorizontalSpacing(6)
+        self.gridLayout_4.setVerticalSpacing(8)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.btnEnviar = QtWidgets.QPushButton(self.pgChat)
         self.btnEnviar.setMinimumSize(QtCore.QSize(65, 25))
@@ -146,6 +147,8 @@ class Ui_MainWindow(object):
         self.inputMsg.setObjectName("inputMsg")
         self.gridLayout_4.addWidget(self.inputMsg, 1, 0, 1, 1)
         self.listChat = QtWidgets.QListWidget(self.pgChat)
+        self.listChat.setMinimumSize(QtCore.QSize(380, 440))
+        self.listChat.setMaximumSize(QtCore.QSize(380, 440))
         font = QtGui.QFont()
         font.setFamily("MV Boli")
         font.setPointSize(11)

@@ -1,6 +1,6 @@
 import sys, asyncio, websockets, time
 from threading import Thread
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QListWidgetItem, QScrollBar
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QListWidgetItem, QScrollBar, QAbstractItemView
 from PyQt5.QtCore import Qt, QTime
 from display import *
 
@@ -10,13 +10,19 @@ class Chat(QMainWindow, Ui_MainWindow):
         super().__init__(parent)
         super().setupUi(self)
 
+
         # Inicialização de Variáveis
         self.url = "ws://localhost:55555"
         self.nick = ""
+
         self.stackedWidget.setCurrentWidget(self.pgLogin)
+
         self.listChat.clear()
         self.listChat.setWordWrap(True)
         self.listChat.setSpacing(5)
+        
+        self.listChat.model().rowsInserted.connect(lambda: self.listChat.scrollToBottom())
+
         scroll_bar = QScrollBar(self)
         scroll_bar.setStyleSheet("background: lightgreen; border: none; width: 0px;")
         self.listChat.setVerticalScrollBar(scroll_bar)
@@ -36,11 +42,12 @@ class Chat(QMainWindow, Ui_MainWindow):
         self.inputMsg.returnPressed.connect(self.send_msg)
         self.inputNick.returnPressed.connect(self.join_chat)
 
+
         # Chamando o método Copiar Mensagem para o item da lista
         self.listChat.itemDoubleClicked.connect(self.msg_copy)
 
 
-    # Copiar Mensagem
+    # Método Copiar Mensagem
     def msg_copy(self, lstItem):
         text = lstItem.text().split('\n')
         text = ''.join(text[1])
@@ -70,19 +77,21 @@ class Chat(QMainWindow, Ui_MainWindow):
 
     # Método que envia a Mensagem
     def send_msg(self):
-        # Registrando a mensagem
+        ### Registrando a mensagem  ###
         self.msg = self.inputMsg.text()
         self.inputMsg.setText('')
 
-        # item = QListWidgetItem(f"{self.nick} - {QTime.currentTime().toString('H:m')}\n{self.msg}")
-        # item.setBackground(Qt.green)
-        # item.setTextAlignment(Qt.AlignRight)
-        # self.listChat.addItem(item)
-        # self.listChat.scrollToItem(item)
+        message = f"{self.nick} - {QTime.currentTime().toString('H:m')}\n{self.msg}"
 
-        # Enviando Mensagem para o Thread de Envio
-        self.sendThread.msg = f"{self.nick} - {QTime.currentTime().toString('H:m')}\n{self.msg}"
+        ### Enviando a Mensagem para o Thread de Envio  ###
+        self.sendThread.msg = message
 
+        ### Prévia da mensagem enviada... ###
+        # obj = QListWidgetItem(message)
+        # obj.setBackground(Qt.green)
+        # obj.setTextAlignment(Qt.AlignRight)
+        # self.listChat.addItem(obj)
+        
 
 
 class SendThread(Thread):
@@ -100,16 +109,24 @@ class SendThread(Thread):
     # Método para Enviar Mensagens
     async def produce(self) -> None:
         async for ws in websockets.connect(self.url):
-            try: 
-                tempo = round(time.time())
-                while tempo + 40 > round(time.time()):
-                    if self.msg:
-                        await ws.send(self.msg)
-                        await ws.recv()
-                        self.msg = ''
-                        time.sleep(1)
-            except websockets.ConnectionClosed:
-                continue
+            while True:
+                try:
+                    # Criando um check state para manter o socket aberto
+                    await ws.send("PING")
+                    await ws.recv()
+                    await asyncio.sleep(0.2)
+
+                    tempo = round(time.time())
+
+                    while tempo + 30 > round(time.time()):
+                        if self.msg:
+                            await ws.send(self.msg)
+                            await ws.recv()
+                            self.msg = ''
+                            await asyncio.sleep(0.2)
+                except websockets.ConnectionClosed:
+                    # print('Conexão perdida no Thread de Envio')
+                    break
 
 
 
@@ -130,22 +147,22 @@ class ReceiveThread(Thread):
     # Método para Receber Mensagens
     async def consume(self, url: str) -> None:
         async for ws in websockets.connect(self.url):
+            try:
                 async for msg in ws:
-                    try:
+                    if msg != 'PING':
                         if not self.nick == msg[:len(self.nick)]:
-                            item = QListWidgetItem(msg)
-                            item.setBackground(Qt.gray)
-                            item.setTextAlignment(Qt.AlignLeft)
-                            self.listChat.addItem(item)
-                            self.listChat.scrollToItem(item)
+                            obj = QListWidgetItem(msg)
+                            obj.setBackground(Qt.gray)
+                            obj.setTextAlignment(Qt.AlignLeft)
+                            self.listChat.addItem(obj)
                         else:
-                            item = QListWidgetItem(msg)
-                            item.setBackground(Qt.green)
-                            item.setTextAlignment(Qt.AlignRight)
-                            self.listChat.addItem(item)
-                            self.listChat.scrollToItem(item)
-                    except websockets.ConnectionClosed:
-                        continue
+                            obj = QListWidgetItem(msg)
+                            obj.setBackground(Qt.green)
+                            obj.setTextAlignment(Qt.AlignRight)
+                            self.listChat.addItem(obj)
+            except websockets.ConnectionClosed:
+                # print('Conexão perdida no Thread de Recebimento')
+                continue
 
 
 
