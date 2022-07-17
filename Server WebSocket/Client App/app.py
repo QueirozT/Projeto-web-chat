@@ -70,14 +70,15 @@ class Chat(QMainWindow, Ui_MainWindow):
 
     # Método que envia a Mensagem
     def send_msg(self):
-        # Mostrando Mensagem Enviada
+        # Registrando a mensagem
         self.msg = self.inputMsg.text()
-        item = QListWidgetItem(f"{self.nick} - {QTime.currentTime().toString('H:m')}\n{self.msg}")
-        item.setBackground(Qt.green)
-        item.setTextAlignment(Qt.AlignRight)
-        self.listChat.addItem(item)
-        self.listChat.scrollToItem(item)
         self.inputMsg.setText('')
+
+        # item = QListWidgetItem(f"{self.nick} - {QTime.currentTime().toString('H:m')}\n{self.msg}")
+        # item.setBackground(Qt.green)
+        # item.setTextAlignment(Qt.AlignRight)
+        # self.listChat.addItem(item)
+        # self.listChat.scrollToItem(item)
 
         # Enviando Mensagem para o Thread de Envio
         self.sendThread.msg = f"{self.nick} - {QTime.currentTime().toString('H:m')}\n{self.msg}"
@@ -135,6 +136,12 @@ class ReceiveThread(Thread):
                             item = QListWidgetItem(msg)
                             item.setBackground(Qt.gray)
                             item.setTextAlignment(Qt.AlignLeft)
+                            self.listChat.addItem(item)
+                            self.listChat.scrollToItem(item)
+                        else:
+                            item = QListWidgetItem(msg)
+                            item.setBackground(Qt.green)
+                            item.setTextAlignment(Qt.AlignRight)
                             self.listChat.addItem(item)
                             self.listChat.scrollToItem(item)
                     except websockets.ConnectionClosed:
