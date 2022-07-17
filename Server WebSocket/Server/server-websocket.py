@@ -20,7 +20,7 @@ from websockets import WebSocketServerProtocol
 path = pathlib.Path(__file__).parent
 logging.basicConfig(
     format='%(levelname)s : %(asctime)s >>> %(message)s',
-    datefmt='%m/%d/%y %I:%M %p',
+    datefmt='%m/%d/%y %I:%M:%S %p',
     level=logging.INFO
 )
 
@@ -30,11 +30,11 @@ class Server:
 
     async def register(self, ws: WebSocketServerProtocol) -> None:
         self.clients.add(ws)
-        logging.info(f'{ws.remote_address}connects.')
+        logging.info(f'{ws.remote_address} connects.')
 
     async def unregister(self, ws: WebSocketServerProtocol) -> None:
         self.clients.remove(ws)
-        logging.info(f'{ws.remote_address}disconnects.')
+        logging.info(f'{ws.remote_address} disconnects.')
 
     async def send_to_clients(self, message: str) -> None:
         if self.clients:
@@ -45,6 +45,8 @@ class Server:
         await self.register(ws)
         try:
             await self.distribute(ws)
+        except websockets.ConnectionClosedError:
+            pass
         except Exception as e:
             logging.warning(e.__class__)
         finally:
