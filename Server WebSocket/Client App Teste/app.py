@@ -1,4 +1,3 @@
-from base64 import encode
 import sys, asyncio, websockets, time
 from threading import Thread
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QListWidgetItem, QScrollBar, QAbstractItemView
