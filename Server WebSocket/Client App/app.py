@@ -12,7 +12,7 @@ class Chat(QMainWindow, Ui_MainWindow):
 
 
         # Inicialização de Variáveis
-        self.url = "ws://localhost:55555"
+        self.url = "wss://chat-com-fastapi.herokuapp.com/echo"
         self.nick = ""
 
         self.stackedWidget.setCurrentWidget(self.pgLogin)
