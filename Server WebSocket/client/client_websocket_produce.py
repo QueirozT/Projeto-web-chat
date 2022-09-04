@@ -12,7 +12,7 @@ async def produce(nickName: str, url: str) -> None:
 
 
 if __name__ == "__main__":
-    websocket_resource_url = f"ws://localhost:55555"
+    websocket_resource_url = "ws://localhost:55555"
 
     nickName = input("Digite seu nick: ")
 

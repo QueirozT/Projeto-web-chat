@@ -25,7 +25,7 @@ def log_message(message: str) -> None:
 
 
 if __name__ == "__main__":
-    websocket_resource_url = f"ws://localhost:55555"
+    websocket_resource_url = "ws://localhost:55555"
 
     try:
         ## INICIALIZAÇÃO ATRAVÉS DE asyncio.run

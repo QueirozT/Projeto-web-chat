@@ -41,7 +41,7 @@ class Server:
             # Use wait or gather
             await asyncio.gather(*[client.send(message) for client in self.clients])
 
-    async def ws_handler(self, ws: WebSocketServerProtocol, uri: str) -> None:
+    async def ws_handler(self, ws: WebSocketServerProtocol) -> None:
         await self.register(ws)
         try:
             await self.distribute(ws)
